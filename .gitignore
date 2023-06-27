@@ -1,0 +1,22 @@
+### Python ###
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# Distribution / packaging
+build/
+dist/
+
+# Unit test / coverage reports
+htmlcov/
+.coverage
+.coverage.*
+.pytest_cache/
+
+
+### IDEs ###
+# Visual Studio Code
+.vscode/
+
+
+# Linting
+.mypy_cache/
