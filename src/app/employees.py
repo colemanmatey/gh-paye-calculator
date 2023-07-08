@@ -2,6 +2,7 @@
 """
 
 from dataclasses import dataclass
+from enum import Enum
 
 
 @dataclass
@@ -13,12 +14,19 @@ class Credential:
     ssnit_number: str
 
 
+class Residency(Enum):
+    RESIDENT_FULLTIME = 1
+    RESIDENT_PARTTIME = 2
+    RESIDENT_CASUAL = 3
+    NON_RESIDENT = 4
+
+
 @dataclass
 class Profile:
     """"""
 
     position: str
-    residency: str
+    residency: Residency
     has_secondary_employment: bool = False
     is_ssnit_member: bool = False
 

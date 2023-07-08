@@ -1,8 +1,6 @@
 """
 """
 
-from dataclasses import dataclass
-
 
 class PAYE:
     """A class representing the tax information of an Employee"""
@@ -49,7 +47,7 @@ class PAYE:
         Returns:
             float: A number representing 5.5% of the employee's basic salary if a ssnit member or 0 if not a ssnit member
         """
-        if self.employee.profile.is_ssnit_member == True:
+        if self.employee.profile.is_ssnit_member:
             ssnit_contribution = self.basic_salary * 0.055
             return ssnit_contribution
         return 0
@@ -125,7 +123,7 @@ class PAYE:
     def compute_tax_deductible(self):
         """Calculates the tax deductible
 
-        This is the value of tax on Chargeable Income (total taxable emolument) 
+        This is the value of tax on Chargeable Income (total taxable emolument)
         using the rates in the First schedule of Internal Revenue Act, 2000 (Act 592) as amended
         """
         pass
