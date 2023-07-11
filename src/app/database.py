@@ -34,8 +34,8 @@ class RatesDB(Database):
                 CREATE TABLE IF NOT EXISTS rates (
                     id INTEGER PRIMARY KEY,
                     year INTEGER,
-                    rate REAL,
                     chargeable_income REAL,
+                    rate REAL,
                     tax_payable REAL,
                     cummulative_income REAL,
                     cummulative_tax REAL
@@ -49,8 +49,8 @@ class RatesDB(Database):
                 """
                 INSERT INTO rates (
                     year,
-                    rate,
                     chargeable_income,
+                    rate,
                     tax_payable,
                     cummulative_income,
                     cummulative_tax
@@ -76,3 +76,32 @@ class RatesDB(Database):
             (year,),
         )
         return self.cursor.fetchall()
+
+    def get_chargeables(self):
+        self.cursor.execute(
+            """
+            SELECT chargeable_income FROM rates
+            """
+        )
+        query = self.cursor.fetchall()
+        return [chargeable[0] for chargeable in query]
+
+    def get_rates(self):
+        self.cursor.execute(
+            """
+            SELECT rate FROM rates
+            """
+        )
+        query = self.cursor.fetchall()
+        return [(rate[0] / 100) for rate in query]
+
+    def get_cum_taxes(self):
+        self.cursor.execute(
+            """
+            SELECT cummulative_tax FROM rates
+            """
+        )
+        query = self.cursor.fetchall()
+        return [cum_tax[0] for cum_tax in query]
+
+
