@@ -1,6 +1,11 @@
 """
 """
 
+from .database import RatesDB
+
+import math
+
+
 
 class PAYE:
     """A class representing the tax information of an Employee"""
@@ -126,7 +131,46 @@ class PAYE:
         This is the value of tax on Chargeable Income (total taxable emolument)
         using the rates in the First schedule of Internal Revenue Act, 2000 (Act 592) as amended
         """
-        pass
+        db = RatesDB("rates.db")
+        rates = db.get_rates()
+        cum_incs = db.get_cum_incomes()
+        cum_taxes = db.get_cum_taxes()
+
+        taxable = self.compute_chargeable_income()
+
+        def round_half_up(n, decimals=0):
+            multiplier = 10**decimals
+            return math.floor(n * multiplier + 0.5) / multiplier
+
+        def at_level(num):
+            tax = (taxable - cum_incs[num - 1]) * rates[num]
+            payable = tax + cum_taxes[num - 1]
+            return payable
+        tax = 0
+        match self.employee.residency.name:
+            case 'RESIDENT_FULLTIME':
+                if taxable <= cum_incs[0]:
+                    tax = taxable * rates[0]
+                elif taxable <= cum_incs[1]:
+                    tax = at_level(1)
+                elif taxable <= cum_incs[2]:
+                    tax = at_level(2)
+                elif taxable <= cum_incs[3]:
+                    tax = at_level(3)
+                elif taxable <= cum_incs[4]:
+                    tax = at_level(4)
+                elif taxable <= cum_incs[5]:
+                    tax = at_level(5)
+                elif taxable <= cum_incs[6]:
+                    tax = at_level(6)
+            case 'RESIDENT_PARTTIME':
+                tax = taxable * 0.10
+            case 'RESIDENT_CASUAL':
+                tax = taxable * 0.05
+            case 'NON_RESIDENT':
+                tax = taxable * 0.25
+
+        return round_half_up(tax, 2)
 
     def compute_overtime_tax(self):
         """Calculates the overtime tax"""

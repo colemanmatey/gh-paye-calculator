@@ -95,6 +95,15 @@ class RatesDB(Database):
         query = self.cursor.fetchall()
         return [(rate[0] / 100) for rate in query]
 
+    def get_cum_incomes(self):
+        self.cursor.execute(
+            """
+            SELECT cummulative_income FROM rates
+            """
+        )
+        query = self.cursor.fetchall()
+        return [cum_inc[0] for cum_inc in query]
+
     def get_cum_taxes(self):
         self.cursor.execute(
             """
@@ -103,5 +112,3 @@ class RatesDB(Database):
         )
         query = self.cursor.fetchall()
         return [cum_tax[0] for cum_tax in query]
-
-
