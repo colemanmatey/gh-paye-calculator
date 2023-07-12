@@ -128,7 +128,7 @@ def test_compute_chargeable_income(paye, ssnit_membership, excess, benefit, dedu
 )
 def test_compute_tax_deductible(paye, ssnit_membership, residency, expected_tax):
     paye.employee.profile.is_ssnit_member = ssnit_membership
-    paye.employee.residency = residency
+    paye.employee.profile.residency = residency
     actual_tax = paye.compute_tax_deductible()
     assert actual_tax == expected_tax[residency.name][ssnit_membership]
 

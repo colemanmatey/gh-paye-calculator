@@ -146,8 +146,7 @@ class PAYE:
             payable = tax + cum_taxes[num - 1]
             return payable
 
-        tax = 0
-        match self.employee.residency.name:
+        match self.employee.profile.residency.name:
             case "RESIDENT_FULLTIME":
                 if taxable <= cum_incs[0]:
                     tax = taxable * rates[0]
@@ -161,7 +160,7 @@ class PAYE:
                     tax = at_level(4)
                 elif taxable <= cum_incs[5]:
                     tax = at_level(5)
-                elif taxable <= cum_incs[6]:
+                else:
                     tax = at_level(6)
             case "RESIDENT_PARTTIME":
                 tax = taxable * 0.10
@@ -169,7 +168,6 @@ class PAYE:
                 tax = taxable * 0.05
             case "NON_RESIDENT":
                 tax = taxable * 0.25
-
         return round_half_up(tax, 2)
 
     def compute_overtime_tax(self):
