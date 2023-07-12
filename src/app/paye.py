@@ -6,7 +6,6 @@ from .database import RatesDB
 import math
 
 
-
 class PAYE:
     """A class representing the tax information of an Employee"""
 
@@ -146,9 +145,10 @@ class PAYE:
             tax = (taxable - cum_incs[num - 1]) * rates[num]
             payable = tax + cum_taxes[num - 1]
             return payable
+
         tax = 0
         match self.employee.residency.name:
-            case 'RESIDENT_FULLTIME':
+            case "RESIDENT_FULLTIME":
                 if taxable <= cum_incs[0]:
                     tax = taxable * rates[0]
                 elif taxable <= cum_incs[1]:
@@ -163,11 +163,11 @@ class PAYE:
                     tax = at_level(5)
                 elif taxable <= cum_incs[6]:
                     tax = at_level(6)
-            case 'RESIDENT_PARTTIME':
+            case "RESIDENT_PARTTIME":
                 tax = taxable * 0.10
-            case 'RESIDENT_CASUAL':
+            case "RESIDENT_CASUAL":
                 tax = taxable * 0.05
-            case 'NON_RESIDENT':
+            case "NON_RESIDENT":
                 tax = taxable * 0.25
 
         return round_half_up(tax, 2)
