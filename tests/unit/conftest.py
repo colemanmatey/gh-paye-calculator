@@ -80,8 +80,8 @@ def query(cur):
         """
         INSERT INTO rates (
             year,
-            rate,
             chargeable_income,
+            rate,
             tax_payable,
             cummulative_income,
             cummulative_tax
