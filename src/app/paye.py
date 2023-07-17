@@ -1,9 +1,9 @@
 """
 """
 
-from .database import RatesDB
-
 import math
+
+from .database import RatesDB
 
 
 class PAYE:
@@ -172,4 +172,13 @@ class PAYE:
 
     def compute_overtime_tax(self):
         """Calculates the overtime tax"""
-        pass
+        return 0
+
+    def compute_total_tax_payable(self):
+        """Calculates the total tax payable to GRA"""
+        self.compute_bonus_income()
+        final_tax_on_bonus_income = self.compute_final_tax_on_bonus()
+        tax_deductible = self.compute_tax_deductible()
+        overtime_tax = self.compute_overtime_tax()
+        tax_payable = sum([final_tax_on_bonus_income, tax_deductible, overtime_tax])
+        return tax_payable

@@ -134,5 +134,13 @@ def test_compute_tax_deductible(paye, ssnit_membership, residency, expected_tax)
 
 
 @pytest.mark.skip(reason="Not implemented")
-def test_compute_overtime_tax(paye, overtime):
+def test_compute_overtime_tax(paye):
     pass
+
+
+def test_compute_total_tax_payable(paye):
+    paye.employee_bonus_percentage = 0
+    paye.compute_bonus_income()
+    actual = paye.compute_total_tax_payable()
+    expected = 63.65
+    assert actual == expected
