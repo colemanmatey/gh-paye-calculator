@@ -139,8 +139,6 @@ def test_compute_overtime_tax(paye):
 
 
 def test_compute_total_tax_payable(paye):
-    paye.employee_bonus_percentage = 0
-    paye.compute_bonus_income()
     actual = paye.compute_total_tax_payable()
     expected = 63.65
     assert actual == expected
