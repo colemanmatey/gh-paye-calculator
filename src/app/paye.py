@@ -49,7 +49,8 @@ class PAYE:
         the employee
 
         Returns:
-            float: A number representing 5.5% of the employee's basic salary if a ssnit member or 0 if not a ssnit member
+            float:  A number representing 5.5% of the employee's basic salary
+                    if a ssnit member or 0 if not a ssnit member
         """
         if self.employee.profile.is_ssnit_member:
             ssnit_contribution = self.basic_salary * 0.055
@@ -59,8 +60,9 @@ class PAYE:
     def compute_bonus_income(self):
         """Calculates the bonus income for an employee
 
-        This creates two new instance attributes: one for bonus income up to 15%
-        of annual income and one for any excess bonus
+        This creates two new instance attributes:
+        1. bonus income up to 15% of annual income
+        2. any excess bonus
 
         """
         annual_income = self.basic_salary * 12
@@ -79,17 +81,19 @@ class PAYE:
         This tax is on up to 15%  of the employees Annual basic salary
 
         Returns:
-            float: A number representing 5% tax on the employee's annual basic salary
+            float:  A number representing 5% tax on the employee's
+                    annual basic salary
         """
         return self.bonus_income * self.bonus_tax_rate
 
     def compute_total_cash_emolument(self):
         """Calculates that total cash emolument
 
-        This is the sum of the basic salary, cash allowances and excess bonu
+        This is the sum of the basic salary, cash allowances and excess bonus
 
         Returns:
-            float: A number representing the total cash emolument for the employee
+            float:  A number representing the total cash emolument
+                    for the employee
         """
         self.compute_bonus_income()
         return self.basic_salary + self.cash_allowances + self.excess_bonus
@@ -98,11 +102,14 @@ class PAYE:
         """Calculates the total assessable income
 
         Returns:
-            float: This is the sum of total cash emolument, accommodation and vehicle elements, and non-cash benefits
+            float:  This is the sum of total cash emolument,
+                    accommodation and vehicle elements, and non-cash benefits
         """
         total_cash_emolument = self.compute_total_cash_emolument()
         benefits = (
-            self.accommodation_element + self.vehicle_element + self.non_cash_benefit
+            self.accommodation_element
+            + self.vehicle_element
+            + self.non_cash_benefit
         )
         return total_cash_emolument + benefits
 
@@ -110,7 +117,8 @@ class PAYE:
         """Calculates the total reliefs applicable to employee
 
         Returns:
-            float: The sum of allowable pension reliefs granted to the employee and deductible reliefs
+            float:  The sum of allowable pension reliefs
+                    granted to the employee and deductible reliefs
         """
         ssnit_contribution = self.compute_ssf()
         return ssnit_contribution + self.third_tier + self.deductible_reliefs
@@ -127,8 +135,9 @@ class PAYE:
     def compute_tax_deductible(self):
         """Calculates the tax deductible
 
-        This is the value of tax on Chargeable Income (total taxable emolument)
-        using the rates in the First schedule of Internal Revenue Act, 2000 (Act 592) as amended
+        This is the value of tax on Chargeable Income
+        (total taxable emolument) using the rates in the First
+        schedule of Internal Revenue Act, 2000 (Act 592) as amended
         """
         db = RatesDB("rates.db")
         rates = db.get_rates()
@@ -172,7 +181,14 @@ class PAYE:
 
     def compute_overtime_tax(self):
         """Calculates the overtime tax"""
-        return 0
+        if self.employee.profile.position.name == "JUNIOR":
+            half_basic = self.basic_salary * 0.5
+            if self.overtime_income <= half_basic:
+                return self.overtime_income * 0.05
+            else:
+                primary = half_basic * 0.05
+                excess = (self.overtime_income - half_basic) * 0.1
+                return primary + excess
 
     def compute_total_tax_payable(self):
         """Calculates the total tax payable to GRA"""
@@ -180,5 +196,7 @@ class PAYE:
         final_tax_on_bonus_income = self.compute_final_tax_on_bonus()
         tax_deductible = self.compute_tax_deductible()
         overtime_tax = self.compute_overtime_tax()
-        tax_payable = sum([final_tax_on_bonus_income, tax_deductible, overtime_tax])
+        tax_payable = sum(
+            [final_tax_on_bonus_income, tax_deductible, overtime_tax]
+        )
         return tax_payable

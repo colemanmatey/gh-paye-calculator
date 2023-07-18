@@ -4,7 +4,7 @@
 import pytest
 
 from app.database import RatesDB
-from app.employees import Credential, Employee, Profile, Residency
+from app.employees import Credential, Employee, Position, Profile, Residency
 from app.paye import PAYE
 
 
@@ -15,7 +15,7 @@ def credential():
 
 @pytest.fixture
 def profile():
-    yield Profile("Junior Staff", Residency.RESIDENT_FULLTIME)
+    yield Profile(Position.JUNIOR, Residency.RESIDENT_FULLTIME)
 
 
 @pytest.fixture

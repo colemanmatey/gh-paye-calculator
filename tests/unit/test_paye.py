@@ -99,11 +99,11 @@ def test_compute_total_reliefs(paye, ssnit_membership, third_tier, deductible):
     [(0, 0, 0), (0, 130, 100), (108, 200, 0), (10, 80, 240)],
 )
 @pytest.mark.parametrize(
-    "ssnit_membership",
+    "ssnit_status",
     [pytest.param(True, id="ssnit"), pytest.param(False, id="no_ssnit")],
 )
-def test_compute_chargeable_income(paye, ssnit_membership, excess, benefit, deductible):
-    paye.employee.profile.is_ssnit_member = ssnit_membership
+def test_compute_chargeable_income(paye, ssnit_status, excess, benefit, deductible):
+    paye.employee.profile.is_ssnit_member = ssnit_status
     paye.excess_bonus = excess
     paye.accommodation_element = benefit
     paye.deductible_reliefs = deductible
@@ -133,9 +133,11 @@ def test_compute_tax_deductible(paye, ssnit_membership, residency, expected_tax)
     assert actual_tax == expected_tax[residency.name][ssnit_membership]
 
 
-@pytest.mark.skip(reason="Not implemented")
-def test_compute_overtime_tax(paye):
-    pass
+@pytest.mark.parametrize("overtime, expected", [(200, 10), (450, 22.5), (500, 27.50)])
+def test_compute_overtime_tax(paye, overtime, expected):
+    paye.overtime_income = overtime
+    actual = paye.compute_overtime_tax()
+    assert actual == expected
 
 
 def test_compute_total_tax_payable(paye):

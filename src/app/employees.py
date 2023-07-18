@@ -21,11 +21,19 @@ class Residency(Enum):
     NON_RESIDENT = 4
 
 
+class Position(Enum):
+    EXPATRIATE = 1
+    MANAGEMENT = 2
+    SENIOR = 3
+    JUNIOR = 4
+    OTHER = 5
+
+
 @dataclass
 class Profile:
     """"""
 
-    position: str
+    position: Position
     residency: Residency
     has_secondary_employment: bool = False
     is_ssnit_member: bool = False
