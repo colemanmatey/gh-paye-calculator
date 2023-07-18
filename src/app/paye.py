@@ -9,7 +9,7 @@ from .database import RatesDB
 class PAYE:
     """A class representing the tax information of an Employee"""
 
-    employee_bonus_percentage = 0.02
+    employee_bonus_percentage = 0
     bonus_tax_rate = 0.05
     overtime_tax_rate = 0.05
 
@@ -141,7 +141,7 @@ class PAYE:
             multiplier = 10**decimals
             return math.floor(n * multiplier + 0.5) / multiplier
 
-        def at_level(num):
+        def level(num):
             tax = (taxable - cum_incs[num - 1]) * rates[num]
             payable = tax + cum_taxes[num - 1]
             return payable
@@ -151,17 +151,17 @@ class PAYE:
                 if taxable <= cum_incs[0]:
                     tax = taxable * rates[0]
                 elif taxable <= cum_incs[1]:
-                    tax = at_level(1)
+                    tax = level(1)
                 elif taxable <= cum_incs[2]:
-                    tax = at_level(2)
+                    tax = level(2)
                 elif taxable <= cum_incs[3]:
-                    tax = at_level(3)
+                    tax = level(3)
                 elif taxable <= cum_incs[4]:
-                    tax = at_level(4)
+                    tax = level(4)
                 elif taxable <= cum_incs[5]:
-                    tax = at_level(5)
+                    tax = level(5)
                 else:
-                    tax = at_level(6)
+                    tax = level(6)
             case "RESIDENT_PARTTIME":
                 tax = taxable * 0.10
             case "RESIDENT_CASUAL":
